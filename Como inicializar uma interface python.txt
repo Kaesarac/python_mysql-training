@@ -1,0 +1,5 @@
+-cmd
+-cd desktop
+-cd interfaces python
+-pyuic5 -x "nome do arquivo .ui" -o "nome do projeto que desejar.py"
+(irá gerar um arquivo python, vinculado ao arquivo de design)
