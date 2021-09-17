@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(170, 170, 127);</string>
+   <string notr="true">background-color: rgb(121, 200, 117);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="labelTitulo">
@@ -212,7 +212,7 @@
    <widget class="QPushButton" name="buttonEnviar">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>270</x>
       <y>440</y>
       <width>131</width>
       <height>41</height>
@@ -225,10 +225,32 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(170, 170, 0);</string>
+     <string notr="true">background-color: rgb(162, 200, 186);</string>
     </property>
     <property name="text">
      <string>ENVIAR</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonConsulta">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>440</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>MS PGothic</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(162, 200, 186);</string>
+    </property>
+    <property name="text">
+     <string>CONSULTAR</string>
     </property>
    </widget>
   </widget>

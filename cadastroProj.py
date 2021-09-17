@@ -1,11 +1,13 @@
 from PyQt5 import uic, QtCore, QtGui, QtWidgets
 import mysql.connector
+from reportlab.pdfgen import canvas
 
 banco = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="",
-    database="cadastro_produtos"
+    passwd="admin",
+    database="cadastro_produtos",
+    auth_plugin='mysql_native_password'
 )
 
 class Ui_MainWindow(object):
@@ -149,15 +151,66 @@ def funcao_principal():
     print("Descrição: ", linha2)
     print("Preço: ", linha3)
     cursor = banco.cursor()
-    comando_SQL = "insert into produtos (codigo, descricao, preco, categoria) VALUES(%s,%s,%s,%s)"
+    comando_SQL = "INSERT INTO produtos (codigo,descricao,preco,categoria) VALUES(%s,%s,%s,%s)"
     dados = (str(linha1), str(linha2), str(linha3), categoria)
-    cursor.execite(comando_SQL, dados)
+    cursor.execute(comando_SQL, dados)
     banco.commit()
+    cadastro.linhaCodigo.setText("")
+    cadastro.linhaDesc.setText("")
+    cadastro.linhaPreco.setText("")
 
+
+def funcao_consultar():
+    consultar.show()
+    cursor = banco.cursor()
+    comando_SQL = "SELECT * from produtos"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+
+    consultar.tableWidget.setRowCount(len(dados_lidos))
+    consultar.tableWidget.setColumnCount(5)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0,5):
+            consultar.tableWidget.setItem(i,j,QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
+
+
+def funcao_pdf():
+    cursor = banco.cursor()
+    comando_SQL = "SELECT * FROM produtos"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+    y = 0
+    pdf = canvas.Canvas("cadastro_produtos.pdf")
+    pdf.setFont("Times-Bold", 25)
+    pdf.drawString(200,800, "Produtos Cadastrados: ")
+    pdf.setFont("Times-Bold", 18)
+
+    pdf.drawString(10,750, "ID")
+    pdf.drawString(110, 750, "CÓDIGO")
+    pdf.drawString(210, 750, "PRODUTO")
+    pdf.drawString(310, 750, "PREÇO")
+    pdf.drawString(410, 750, "CATEGORIA")
+
+    for i in range(0, len(dados_lidos)):
+        y = y + 50
+        pdf.drawString(10, 750 - y, str(dados_lidos[i][0]))
+        pdf.drawString(110, 750 - y, str(dados_lidos[i][1]))
+        pdf.drawString(210, 750 - y, str(dados_lidos[i][2]))
+        pdf.drawString(310, 750 - y, str(dados_lidos[i][3]))
+        pdf.drawString(410, 750 - y, str(dados_lidos[i][4]))
+
+
+    pdf.save()
+    print("PDF GERADO COM SUCESSO!")
 
 app = QtWidgets.QApplication([])
 cadastro = uic.loadUi("Cadastro1.ui")
+consultar = uic.loadUi("Consultar1.ui")
 cadastro.buttonEnviar.clicked.connect(funcao_principal)
+cadastro.buttonConsulta.clicked.connect(funcao_consultar)
+consultar.buttonPDF.clicked.connect(funcao_pdf)
+
 
 cadastro.show()
 app.exec()

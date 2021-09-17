@@ -14,4 +14,4 @@ insert into produtos(codigo, descricao, preco, categoria) VALUES(125, "tablet", 
 insert into produtos(codigo, descricao, preco, categoria) VALUES(126, "arroz", 15.00, "alimentos");
 insert into produtos(codigo, descricao, preco, categoria) VALUES(127, "feijao", 9.50, "alimentos");
 
-describe produtos;
+select * from produtos;
