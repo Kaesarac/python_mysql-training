@@ -2,6 +2,8 @@ from PyQt5 import uic, QtCore, QtGui, QtWidgets
 import mysql.connector
 from reportlab.pdfgen import canvas
 
+numero_id = 0
+
 banco = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -204,12 +206,67 @@ def funcao_pdf():
     pdf.save()
     print("PDF GERADO COM SUCESSO!")
 
+
+def funcao_excluir():
+    linha = consultar.tableWidget.currentRow()
+    consultar.tableWidget.removeRow(linha)
+
+    cursor = banco.cursor()
+    cursor.execute("SELECT id FROM produtos")
+    dados_lidos = cursor.fetchall()
+    valor_id = dados_lidos[linha][0]
+    cursor.execute("DELETE FROM produtos WHERE id="+ str(valor_id))
+
+
+def funcao_editar():
+    global numero_id
+    linha = consultar.tableWidget.currentRow()
+
+    cursor = banco.cursor()
+    cursor.execute("SELECT id FROM produtos")
+    dados_lidos = cursor.fetchall()
+    valor_id = dados_lidos[linha][0]
+    cursor.execute("SELECT * FROM produtos WHERE id=" + str(valor_id))
+    produto = cursor.fetchall()
+    editar.show()
+
+    numero_id = valor_id
+
+    editar.lineEdit.setText(str(produto[0][0]))
+    editar.lineEdit_2.setText(str(produto[0][1]))
+    editar.lineEdit_3.setText(str(produto[0][2]))
+    editar.lineEdit_4.setText(str(produto[0][3]))
+    editar.lineEdit_5.setText(str(produto[0][4]))
+
+
+def funcao_salvar():
+    #pega o numero do id
+    global numero_id
+    #valor digitado no lineedit
+    codigo = editar.lineEdit_2.text()
+    descricao = editar.lineEdit_3.text()
+    preco = editar.lineEdit_4.text()
+    categoria = editar.lineEdit_5.text()
+    #atualizar o DATABASE
+    cursor = banco.cursor()
+    cursor.execute("UPDATE produtos SET codigo = '{}', descricao = '{}', preco = '{}', categoria ='{}' WHERE id = {}".format(codigo,descricao,preco,categoria,numero_id))
+    banco.commit()
+    #atualizar as janelas
+    editar.close()
+    consultar.close()
+    funcao_consultar()
+
+
 app = QtWidgets.QApplication([])
 cadastro = uic.loadUi("Cadastro1.ui")
 consultar = uic.loadUi("Consultar1.ui")
+editar = uic.loadUi("Editar1.ui")
 cadastro.buttonEnviar.clicked.connect(funcao_principal)
 cadastro.buttonConsulta.clicked.connect(funcao_consultar)
 consultar.buttonPDF.clicked.connect(funcao_pdf)
+consultar.buttonExcluir.clicked.connect(funcao_excluir)
+consultar.buttonEditar.clicked.connect(funcao_editar)
+editar.buttonSalvar.clicked.connect(funcao_salvar)
 
 
 cadastro.show()
