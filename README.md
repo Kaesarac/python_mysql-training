@@ -1,4 +1,5 @@
 # python_mysql-training
-In here I store all my training related to Python/MySQL.
+In here I stored my first project using MySQL and Python.
+Finished project.
 
 Also training on using GUI with Python.
